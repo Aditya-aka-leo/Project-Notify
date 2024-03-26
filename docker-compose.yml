@@ -15,9 +15,9 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
 
-  kafka-validator:
+  kafka:
     image: confluentinc/cp-kafka:7.2.1
-    container_name: kafka-validator
+    container_name: kafka
     ports:
       - "8097:8097"
     depends_on:
@@ -26,33 +26,5 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: EXTERNAL:PLAINTEXT,INTERNAL:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:8097,INTERNAL://kafka-validator:9092
-      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
-
-  kakafka-priority:
-    image: confluentinc/cp-kafka:7.2.1
-    container_name: kakafka-priority
-    ports:
-      - "8098:8098"
-    depends_on:
-      - zookeeper
-    environment:
-      KAFKA_BROKER_ID: 2
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: EXTERNAL:PLAINTEXT,INTERNAL:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:8098,INTERNAL://kakafka-priority:9092
-      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
-
-  kakafka-channel-spiller:
-    image: confluentinc/cp-kafka:7.2.1
-    container_name: kafka3
-    ports:
-      - "8099:8099"
-    depends_on:
-      - zookeeper
-    environment:
-      KAFKA_BROKER_ID: 3
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: EXTERNAL:PLAINTEXT,INTERNAL:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:8099,INTERNAL://kafka3:9092
+      KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:8097,INTERNAL://kafka:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
