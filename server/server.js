@@ -2,6 +2,16 @@ const cors = require("cors");
 const express = require("express");
 const main_route = require("./src/routes/main");
 
+const acquire = async () => {
+  try {
+    await require("./src/utils/kafka/admin").kafka_admin();
+    console.log("Acquisition completed successfully");
+  } catch (error) {
+    console.error("Error during acquisition:", error);
+    process.exit(1);
+  }
+};
+acquire();
 const app = express();
 app.use(cors());
 app.use(express.json());

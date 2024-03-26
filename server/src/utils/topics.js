@@ -1,11 +1,11 @@
 const sql = require("mssql");
 var config = {
-  user: "SA", // Database username
-  password: "admin123", // Database password
-  server: "localhost:1433", // Server IP address
-  database: "Topics", // Database name
+  user: "SA", 
+  password: "admin123", 
+  server: "localhost:1433", 
+  database: "Topics", 
   options: {
-    encrypt: false, // Disable encryption
+    encrypt: false, 
   },
 };
 const poolPromise = new sql.ConnectionPool(config)
