@@ -1,5 +1,14 @@
 version: "3"
 services:
+  topics-db:
+    container_name: topics-db
+    image: mcr.microsoft.com/mssql/server:latest
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "admin123"
+    ports:
+      - 1433:1433
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.2.1
     container_name: zookeeper
