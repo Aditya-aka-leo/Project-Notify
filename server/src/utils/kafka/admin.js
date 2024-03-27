@@ -7,9 +7,9 @@ const kafka = new Kafka({
 
 const topicConfigurations = [
   { topic: "Validation", numPartitions: 1 },
-  { topic: "high-priority", numPartitions: 5 },
-  { topic: "mid-priority", numPartitions: 3 },
-  { topic: "low-priority", numPartitions: 1 },
+  { topic: "High-priority", numPartitions: 5 },
+  { topic: "Mid-priority", numPartitions: 3 },
+  { topic: "Low-priority", numPartitions: 1 },
   { topic: "Sms", numPartitions: 2 },
   { topic: "Email", numPartitions: 2 },
   { topic: "Ivr", numPartitions: 2 },
