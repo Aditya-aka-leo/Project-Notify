@@ -62,9 +62,7 @@ const Validator_Prioritizer_Prod = async (msg) => {
 };
 const Service_Selector_Prod = async (msg) => {
   try {
-    if (msg.services[0] == 1)
-      // SMS
-      await produceMessage("Sms", msg);
+    if (msg.services[0] == 1) await produceMessage("Sms", msg); // SMS
     if (msg.services[1] == 1) await produceMessage("Email", msg); // Email
     if (msg.services[2] == 1) await produceMessage("Ivr", msg); // Ivr
     if (msg.services[3] == 1) await produceMessage("Push-Notification", msg); // Push_Notification
