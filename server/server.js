@@ -5,6 +5,7 @@ const main_route = require("./src/routes/main");
 const acquire = async () => {
   try {
     await require("./src/utils/kafka/admin").kafka_admin();
+    await require("./src/utils/mongo/user_client").connectDB();
     console.log("Acquisition completed successfully");
   } catch (error) {
     console.error("Error during acquisition:", error);

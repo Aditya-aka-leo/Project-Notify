@@ -1,7 +1,6 @@
 const express = require("express");
-
+const {create_user} = require('../controller/controller'); 
 const router = express.Router();
 
-// router.post("/url", post_url);
-// router.get("/url/bitly_clone.com/:identifier", get_url);
+router.post("/create_user", create_user);
 module.exports = router;
