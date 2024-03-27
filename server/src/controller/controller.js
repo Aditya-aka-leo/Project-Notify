@@ -1,5 +1,6 @@
 const User = require("../models/users");
-
+const { notify } = require("../routes/main");
+const {prodValidator} = require('../utils/kafka/producer')
 const create_user = async (req, res) => {
   try {
     console.log(req.body);
@@ -28,5 +29,18 @@ const create_user = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
-module.exports = {create_user};
+const notify_user = async(req,res)=>{
+  try{
+    await prodValidator(req.body);
+    return res.json('Pushed Into Validation Queue Successfully');
+   }
+   catch(err)
+   {
+    console.log('Error Sending Payload To Validation Queue',err);
+    return res.json(500).json({error : err});
+  }
+}
+// const validator = async(msg)=>{
+  
+// }
+module.exports = {create_user,notify_user};
