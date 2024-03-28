@@ -33,9 +33,9 @@ const Create_User = async (req, res) => {
 const Delete_User = async (req, res) => {
   try {
     const remove = await User.deleteOne({ user_id: req.body.user_id });
-    console.log("Remove The User Successfully");
+    res.json("Remove The User Successfully");
   } catch (err) {
-    console.log("Error Deleting The User From Db..", err);
+    res.status(500).json('Error Deleting The User From Db..',err);
   }
 };
 const Notify_User_Prod = async (req, res) => {
