@@ -35,7 +35,7 @@ const Delete_User = async (req, res) => {
     const remove = await User.deleteOne({ user_id: req.body.user_id });
     res.json("Remove The User Successfully");
   } catch (err) {
-    res.status(500).json('Error Deleting The User From Db..',err);
+    res.status(500).json("Error Deleting The User From Db..", err);
   }
 };
 const Notify_User_Prod = async (req, res) => {
@@ -78,10 +78,56 @@ const Service_Selector_Prod = async (msg) => {
     console.log("Error Pushing Into Servies Queue", err);
   }
 };
+const Service_Selector_Prod_Bulk = async (msg) => {
+  count = 0;
+  try {
+    for (user of msg.user_id) {
+      let data = {};
+      const userExist = await User.findOne({ user_id: user });
+      if (userExist) {
+        data["user_id"] = userExist.user_id;
+        data["content"] = msg.content;
+        data["priority"] = msg.priority;
+        if (
+          userExist.Allowed_Services.Sms &&
+          userExist.Number != 0 &&
+          msg.services[0] == 1
+        )
+          data["sms"] = userExist.Sms;
+        if (
+          userExist.Allowed_Services.Email &&
+          userExist.Email != 0 &&
+          msg.services[1] == 1
+        )
+          data["email"] = userExist.Email;
+        if (
+          userExist.Allowed_Services.Ivr &&
+          userExist.Ivr != 0 &&
+          msg.services[2] == 1
+        )
+          data["ivr"] = userExist.Number;
+        if (
+          userExist.Allowed_Services.Push_Notification &&
+          userExist.Push_Notification != 0 &&
+          msg.services[3] == 1
+        )
+          data["push_notification"] = userExist.Push_Socket;
+        await Service_Selector_Prod(data);
+        count++;
+      }
+    }
+    console.log(
+      `Msg For ${count} User Pushed Into Services Queue Respectively`
+    );
+  } catch (err) {
+    console.log("Error Pushing Bulk Msg Into Servies Queue", err);
+  }
+};
 module.exports = {
   Create_User,
   Notify_User_Prod,
   Validator_Prioritizer_Prod,
   Service_Selector_Prod,
+  Service_Selector_Prod_Bulk,
   Delete_User,
 };
