@@ -88,6 +88,7 @@ const Service_Selector_Prod_Bulk = async (msg) => {
         data["user_id"] = userExist.user_id;
         data["content"] = msg.content;
         data["priority"] = msg.priority;
+
         if (
           userExist.Allowed_Services.Sms &&
           userExist.Number != 0 &&

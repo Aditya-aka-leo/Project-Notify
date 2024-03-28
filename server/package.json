@@ -10,11 +10,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@vonage/server-sdk": "^3.14.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "dotnet": "^1.1.4",
     "express": "^4.19.2",
     "kafkajs": "^2.2.4",
     "mongoose": "^8.2.3",
-    "mssql": "^10.0.2"
+    "mssql": "^10.0.2",
+    "nodemailer": "^6.9.13",
+    "twilio": "^5.0.1"
   }
 }
