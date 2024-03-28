@@ -13,9 +13,9 @@ const produceMessage = async (topic, msg) => {
       topic,
       messages: [{ value: JSON.stringify(msg) }],
     });
-    console.log('Validation Successfull And Added To the Queue');
+    console.log(`Added To the ${topic} Queue Successfully`);
   } catch (err) {
     console.error(`Error sending message to topic ${topic}:`, err);
   }
 };
-module.exports = {produceMessage };
+module.exports = { produceMessage };
