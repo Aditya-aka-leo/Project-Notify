@@ -30,7 +30,14 @@ const Create_User = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
+const Delete_User = async (req, res) => {
+  try {
+    const remove = await User.deleteOne({ user_id: req.body.user_id });
+    console.log("Remove The User Successfully");
+  } catch (err) {
+    console.log("Error Deleting The User From Db..", err);
+  }
+};
 const Notify_User_Prod = async (req, res) => {
   try {
     await produceMessage("Validation", req.body);
@@ -76,4 +83,5 @@ module.exports = {
   Notify_User_Prod,
   Validator_Prioritizer_Prod,
   Service_Selector_Prod,
+  Delete_User,
 };
