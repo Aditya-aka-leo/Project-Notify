@@ -8,12 +8,10 @@ const send_email = async (msg) => {
       pass: process.env.EMAIL_PASS,
     },
   });
-console.log(process.env.EMAIL_ID)
-console.log(process.env.EMAIL_PASS)
   var mailOptions = {
     from: process.env.EMAIL_ID,
     to: msg.email,
-    subject: msg.Email.subject,
+    subject: msg.email_subject,
     text: msg.content,
   };
 

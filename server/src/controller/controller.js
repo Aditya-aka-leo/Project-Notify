@@ -12,16 +12,16 @@ const Create_User = async (req, res) => {
       console.log("hello in create user");
       const newUser = await User.create({
         user_id: req.body.user_id,
-        Allowed_Services: {
-          Sms: req.body.sms_access,
-          Email: req.body.email_access,
-          Ivr: req.body.ivr_access,
-          Push_Notification: req.body.push_socket_access,
+        services: {
+          sms: req.body.services.sms,
+          email: req.body.services.email,
+          ivr: req.body.services.ivr,
+          push_notification: req.body.services.push_notification,
         },
-        Email: req.body.email,
-        Number: req.body.number,
-        Push_Socket: req.body.push_socket,
-        CreatedAt: new Date(),
+        email: req.body.email,
+        number: req.body.number,
+        push_socket: req.body.push_socket,
+        createdAt: new Date(),
       });
       return res.json("The New User Is Created Successfully");
     }
@@ -69,11 +69,11 @@ const Validator_Prioritizer_Prod = async (msg) => {
 };
 const Service_Selector_Prod = async (msg) => {
   try {
-    console.log(msg)
-    if (msg.services[0] == 1) await produceMessage("Sms", msg); // SMS
-    if (msg.services[1] == 1) await produceMessage("Email", msg); // Email
-    if (msg.services[2] == 1) await produceMessage("Ivr", msg); // Ivr
-    if (msg.services[3] == 1) await produceMessage("Push-Notification", msg); // Push_Notification
+    console.log(msg);
+    if (msg.services.sms == 1) await produceMessage("Sms", msg); // SMS
+    if (msg.services.email == 1) await produceMessage("Email", msg); // Email
+    if (msg.services.ivr == 1) await produceMessage("Ivr", msg); // Ivr
+    if (msg.services.push_notification == 1) await produceMessage("Push-Notification", msg); // Push_Notification
     console.log("Msg Pushed Into Services Queue Respectively");
   } catch (err) {
     console.log("Error Pushing Into Servies Queue", err);
@@ -83,38 +83,48 @@ const Service_Selector_Prod_Bulk = async (msg) => {
   count = 0;
   try {
     for (user of msg.user_id) {
+      console.log('user id ',user);
       let data = {};
       const userExist = await User.findOne({ user_id: user });
       if (userExist) {
         data["user_id"] = userExist.user_id;
         data["content"] = msg.content;
         data["priority"] = msg.priority;
+        data['services'] = {
+          'sms':userExist.services.sms,
+          'email':userExist.services.email,
+          'ivr':userExist.services.ivr,
+          'push_notification':userExist.services.push_notification,
+        }
 
         if (
-          userExist.Allowed_Services.Sms &&
-          userExist.Number != 0 &&
-          msg.services[0] == 1
+          userExist.services.sms &&
+          userExist.number != 0 &&
+          msg.services.sms == 1
         )
-          data["sms"] = userExist.Sms;
+          data["number"] = userExist.number;
         if (
-          userExist.Allowed_Services.Email &&
-          userExist.Email != 0 &&
-          msg.services[1] == 1
-        )
-          data["email"] = userExist.Email;
+          userExist.services.email &&
+          userExist.email != 0 &&
+          msg.services.email == 1
+        ) {
+          data["email_subject"] =msg.email_subject;
+          data["email"] = userExist.email;
+        }
         if (
-          userExist.Allowed_Services.Ivr &&
-          userExist.Ivr != 0 &&
-          msg.services[2] == 1
+          userExist.services.ivr &&
+          userExist.ivr != 0 &&
+          msg.services.ivr == 1
         )
-          data["ivr"] = userExist.Number;
+          data["ivr"] = userExist.number;
         if (
-          userExist.Allowed_Services.Push_Notification &&
-          userExist.Push_Notification != 0 &&
-          msg.services[3] == 1
+          userExist.services.push_notification &&
+          userExist.push_notification != 0 &&
+          msg.services.push_notification == 1
         )
-          data["push_notification"] = userExist.Push_Socket;
-        await Service_Selector_Prod(data);
+          data["push_notification"] = userExist.push_socket;
+          console.log('new data is: ',data);
+          Service_Selector_Prod(data);
         count++;
       }
     }
@@ -133,3 +143,6 @@ module.exports = {
   Service_Selector_Prod_Bulk,
   Delete_User,
 };
+
+
+

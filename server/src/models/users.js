@@ -6,16 +6,16 @@ const User = mongoose.Schema({
     required: true,
     unique: true,
   },
-  Allowed_Services: {
-    Sms: { type: Boolean, default: true },
-    Email: { type: Boolean, default: true },
-    Ivr: { type: Boolean, default: true },
-    Push_Notfication: { type: Boolean, default: true },
+  services: {
+    sms: { type: Boolean, default: true },
+    email: { type: Boolean, default: true },
+    ivr: { type: Boolean, default: true },
+    push_notfication: { type: Boolean, default: true },
   },
-  Email: { type: String, unique: true },
-  Number: { type: String, unique: true },
-  Push_Socket: { type: String, unique: true },
+  email: { type: String},
+  number: { type: String, unique: true },
+  push_socket: { type: String, unique: true },
 
-  CreatedAt: Date,
+  createdAt: Date,
 });
 module.exports = mongoose.model("User", User);
