@@ -4,12 +4,12 @@ const {
   Service_Selector_Prod,
   Service_Selector_Prod_Bulk,
 } = require("../../controller/controller");
-const { send_email } = require("../../utils/Email/email");
+const { send_email } = require("../email/email");
 const { send_sms } = require("../../utils/Sms/sms");
-const { send_ivr } = require("../../utils/Ivr/ivr");
+const { send_ivr } = require("../ivr/ivr");
 const {
   send_push_notification,
-} = require("../../utils/Push Notification/push_notification");
+} = require("../../utils/push notification/push_notification");
 const kafka = new Kafka({
   brokers: ["kafka:8097"],
 });
