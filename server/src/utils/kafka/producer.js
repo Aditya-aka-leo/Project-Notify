@@ -2,7 +2,7 @@ const { Kafka } = require("kafkajs");
 
 const kafka = new Kafka({
   clientId: "Notify",
-  brokers: ["localhost:8097"],
+  brokers: ["kafka:8097"],
 });
 const producer = kafka.producer()
 const produceMessage = async (topic, msg) => {

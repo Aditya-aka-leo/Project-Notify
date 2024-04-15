@@ -19,6 +19,7 @@
     "kafkajs": "^2.2.4",
     "mongoose": "^8.2.3",
     "mssql": "^10.0.2",
+    "node-cron": "^3.0.3",
     "nodemailer": "^6.9.13",
     "twilio": "^5.0.1"
   }

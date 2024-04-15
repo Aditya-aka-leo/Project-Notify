@@ -11,7 +11,7 @@ const {
   send_push_notification,
 } = require("../../utils/Push Notification/push_notification");
 const kafka = new Kafka({
-  brokers: ["localhost:8097"],
+  brokers: ["kafka:8097"],
 });
 
 const consume = async (topic, consumer) => {

@@ -16,5 +16,16 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:8097
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:8097
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  node-server:
+    container_name: node-server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    volumes:
+      - /server/node_modules
+      - ./server:/app
+    ports:
+      - "8081:8081"
+    restart: always
