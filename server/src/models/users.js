@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+const mongoose_user = require("mongoose");
 
-const User = mongoose.Schema({
+const User = mongoose_user.Schema({
   user_id: {
     type: Number,
     required: true,
@@ -18,4 +18,4 @@ const User = mongoose.Schema({
 
   createdAt: Date,
 });
-module.exports = mongoose.model("User", User);
+module.exports = mongoose_user.model("User", User);

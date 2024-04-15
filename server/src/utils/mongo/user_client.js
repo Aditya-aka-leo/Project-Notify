@@ -1,10 +1,10 @@
-const mongoose = require("mongoose");
+const mongoose_user = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config();
 const connectDB = async () => {
-  console.log(`${process.env.MONGO_API_KEY}`);
-  return mongoose
-    .connect(`${process.env.MONGO_API_KEY}`)
+  console.log(`${process.env.MONGO_API_KEY_USERS}`);
+  return mongoose_user
+    .connect(`${process.env.MONGO_API_KEY_USERS}`)
     .then(() => {
       console.log("Connected to database.");
     })

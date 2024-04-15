@@ -1,15 +1,14 @@
 const User = require("../models/users");
 
 const { produceMessage } = require("../utils/kafka/producer");
+const Relayer = require("../models/relayer");
 
 const Create_User = async (req, res) => {
   try {
-    console.log(req.body);
     const userExist = await User.findOne({ user_id: req.body.user_id });
     if (userExist) {
       return res.json("User Already Exists");
     } else {
-      console.log("hello in create user");
       const newUser = await User.create({
         user_id: req.body.user_id,
         services: {
@@ -69,11 +68,11 @@ const Validator_Prioritizer_Prod = async (msg) => {
 };
 const Service_Selector_Prod = async (msg) => {
   try {
-    console.log(msg);
-    if (msg.services.sms == 1) await produceMessage("Sms", msg); // SMS
-    if (msg.services.email == 1) await produceMessage("Email", msg); // Email
-    if (msg.services.ivr == 1) await produceMessage("Ivr", msg); // Ivr
-    if (msg.services.push_notification == 1) await produceMessage("Push-Notification", msg); // Push_Notification
+    if (msg.services.sms == 1) produceMessage("Sms", msg); // SMS
+    if (msg.services.email == 1) produceMessage("Email", msg); // Email
+    if (msg.services.ivr == 1) produceMessage("Ivr", msg); // Ivr
+    if (msg.services.push_notification == 1)
+      produceMessage("Push-Notification", msg); // Push_Notification
     console.log("Msg Pushed Into Services Queue Respectively");
   } catch (err) {
     console.log("Error Pushing Into Servies Queue", err);
@@ -83,19 +82,18 @@ const Service_Selector_Prod_Bulk = async (msg) => {
   count = 0;
   try {
     for (user of msg.user_id) {
-      console.log('user id ',user);
       let data = {};
       const userExist = await User.findOne({ user_id: user });
       if (userExist) {
         data["user_id"] = userExist.user_id;
         data["content"] = msg.content;
         data["priority"] = msg.priority;
-        data['services'] = {
-          'sms':userExist.services.sms,
-          'email':userExist.services.email,
-          'ivr':userExist.services.ivr,
-          'push_notification':userExist.services.push_notification,
-        }
+        data["services"] = {
+          sms: userExist.services.sms,
+          email: userExist.services.email,
+          ivr: userExist.services.ivr,
+          push_notification: userExist.services.push_notification,
+        };
 
         if (
           userExist.services.sms &&
@@ -108,7 +106,7 @@ const Service_Selector_Prod_Bulk = async (msg) => {
           userExist.email != 0 &&
           msg.services.email == 1
         ) {
-          data["email_subject"] =msg.email_subject;
+          data["email_subject"] = msg.email_subject;
           data["email"] = userExist.email;
         }
         if (
@@ -123,8 +121,7 @@ const Service_Selector_Prod_Bulk = async (msg) => {
           msg.services.push_notification == 1
         )
           data["push_notification"] = userExist.push_socket;
-          console.log('new data is: ',data);
-          Service_Selector_Prod(data);
+        await Service_Selector_Prod(data);
         count++;
       }
     }
@@ -135,6 +132,39 @@ const Service_Selector_Prod_Bulk = async (msg) => {
     console.log("Error Pushing Bulk Msg Into Servies Queue", err);
   }
 };
+
+const replay_msg = async (msg) => {
+  try {
+    if (msg.retries === undefined) {
+      msg.retries = 0;
+    } else {
+      msg.retries = msg.retries + 1;
+    }
+    if (msg.retries <= 2) {
+      const newUser = Relayer.create({
+        content: msg.content,
+        services: {
+          sms: msg.services.sms,
+          email: msg.services.email,
+          ivr: msg.services.ivr,
+          push_notification: msg.services.push_notification,
+        },
+        email_subject: msg.email_subject,
+        email: msg.email,
+        number: msg.number,
+        push_socket: msg.push_socket,
+        retries: msg.retries,
+        priority: msg.priority,
+        createdAt: new Date(),
+      });
+    } else {
+      console.log("Max Retries Reached , Dropping The Request");
+    }
+  } catch (error) {
+    console.error("error replaying the msg into Db", error);
+  }
+};
+
 module.exports = {
   Create_User,
   Notify_User_Prod,
@@ -142,7 +172,5 @@ module.exports = {
   Service_Selector_Prod,
   Service_Selector_Prod_Bulk,
   Delete_User,
+  replay_msg,
 };
-
-
-
