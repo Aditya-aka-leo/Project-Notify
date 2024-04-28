@@ -32,11 +32,11 @@ services:
     restart: always
 
   nginx:
-    container_name: nginx
+    container_name:  nginx
     image: nginx:latest
     depends_on:
       - node-server
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf 
     ports:
       - "4000:80"
